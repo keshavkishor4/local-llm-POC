@@ -1,4 +1,5 @@
 from typing import List
+import chainlit as cl
 from ctransformers import AutoModelForCausalLM
 
 # orca Model
@@ -26,6 +27,22 @@ def get_prompt(instruction: str, history: List[str] = None) -> str:
     print(f"Prompt created: {prompt}")
     return prompt
 
+@cl.on_message
+async def on_message(message: cl.Message):
+    response = f"Hello, you just sent: {message.content}!"
+    await cl.Message(response).send()
+"""
+def get_prompt(instruction: str, history: List[str] = None) -> str:
+    system = "You are an AI assistant that gives helpful answers. You answer the question in a short and concise way."
+    prompt = f"### System:\n{system}\n\n### User:\n"
+    if history is not None:
+        prompt += f"This is the conversation history: {''.join(history)}. Now answer the question:-"
+    prompt += f"{instruction}\n\n### Response:\n"
+    # prompt = f"<s>[INST] <<SYS>>\n{system}\n<</SYS>>\n\n{instruction} [/INST]"
+    print(f"Prompt created: {prompt}")
+    return prompt
+
+
 history = []
 question = "Which city is the capital of India?"
 prompt = get_prompt(question)
@@ -41,3 +58,4 @@ prompt = get_prompt(question, history)
 for word in llm(prompt, stream=True):
     print(word, end="", flush=True)
 print()
+"""
